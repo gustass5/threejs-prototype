@@ -129,6 +129,32 @@ const DIRT2_HEIGHT = MAX_HEIGHT * 0;
 	seaMesh.position.set(0, MAX_HEIGHT * 0.1, 0);
 	scene.add(seaMesh);
 
+	let mapContainer = new Mesh(
+		new CylinderGeometry(17.1, 17.1, MAX_HEIGHT * 0.25, 50, 1, true),
+		new MeshPhysicalMaterial({
+			envMap,
+			map: textures.dirt,
+			envMapIntensity: 0.2,
+			side: DoubleSide
+		})
+	);
+	mapContainer.receiveShadow = true;
+	mapContainer.position.set(0, MAX_HEIGHT * 0.125, 0);
+	scene.add(mapContainer);
+
+	let mapFloor = new Mesh(
+		new CylinderGeometry(18.5, 18.5, MAX_HEIGHT * 0.1, 50),
+		new MeshPhysicalMaterial({
+			envMap,
+			map: textures.dirt2,
+			envMapIntensity: 0.1,
+			side: DoubleSide
+		})
+	);
+	mapFloor.receiveShadow = true;
+	mapFloor.position.set(0, -MAX_HEIGHT * 0.05, 0);
+	scene.add(mapFloor);
+
 	renderer.setAnimationLoop(() => {
 		controls.update();
 		renderer.render(scene, camera);
