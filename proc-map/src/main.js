@@ -32,7 +32,7 @@ const camera = new PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 1000);
 camera.position.set(-17, 31, 33);
 // camera.position.set(0, 0, 50);
 
-const renderer = new WebGLRenderer({ antialias: true });
+const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = ACESFilmicToneMapping;
 renderer.outputEncoding = sRGBEncoding;
@@ -283,3 +283,14 @@ function clouds() {
 
 	scene.add(mesh);
 }
+
+document.getElementById('n').addEventListener('click', () => {
+	const canvas = document.querySelector('canvas');
+
+	var dataURL = canvas.toDataURL();
+	console.log({ dataURL });
+	var a = document.createElement('a'); //Create <a>
+	a.href = dataURL; //Image Base64 Goes here
+	a.download = 'Image.png'; //File name Here
+	a.click();
+});
