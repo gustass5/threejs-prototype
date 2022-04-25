@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import SimplexNoise from 'simplex-noise';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // Setup code
 
 const simplex = new SimplexNoise();
@@ -31,9 +32,26 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 controls.update();
 
+const loader = new GLTFLoader();
+
+loader.load(
+	'../assets/bunny.glb',
+	function (gltf) {
+		const bunny = gltf.scene;
+		bunny.position.set(10, 1, 10);
+		scene.add(bunny);
+	},
+	undefined,
+	function (error) {
+		console.error(error);
+	}
+);
+const light = new THREE.PointLight();
+light.position.set(100, 20, 10);
+
+scene.add(light);
 function animate() {
 	requestAnimationFrame(animate);
-
 	renderer.render(scene, camera);
 }
 
