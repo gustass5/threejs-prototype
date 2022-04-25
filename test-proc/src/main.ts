@@ -15,11 +15,11 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 const renderer = new THREE.WebGLRenderer();
-// renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 // renderer.outputEncoding = THREE.sRGBEncoding;
 // renderer.physicallyCorrectLights = true;
-// renderer.shadowMap.enabled = true;
-// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -41,42 +41,32 @@ animate();
 
 // Map code
 
-const water1 = { height: 0, color: new THREE.Color(0x5a78e6) };
-const water2 = { height: 0.1, color: new THREE.Color(0x5a78e6) };
-const water3 = { height: 0.2, color: new THREE.Color(0x5a78e6) };
-const sand1 = { height: 0.25, color: new THREE.Color(0xef5e342) };
-const sand2 = { height: 0.3, color: new THREE.Color(0xef5bf42) };
-const sand3 = { height: 0.35, color: new THREE.Color(0xef5a442) };
-const grass1 = { height: 0.4, color: new THREE.Color(0x6ce036) };
-const grass2 = { height: 0.6, color: new THREE.Color(0x27c918) };
-const grass3 = { height: 0.8, color: new THREE.Color(0x148709) };
+const waterHeight = 0;
+const sandHeight = 0.25;
+const grassHeight = 0.4;
 
 for (let i = 0; i < 100; i++) {
 	for (let j = 0; j < 100; j++) {
 		const height = (simplex.noise2D(i * 0.02, j * 0.02) + 1) * 0.5;
-		const geometry = new THREE.BoxGeometry(1, 1, 1);
-		geometry.translate(i, 0, j);
+		const waterBlockHeight = 0.5;
+
+		const geometry = new THREE.BoxGeometry(
+			1,
+			height < sandHeight ? waterBlockHeight : 1,
+			1
+		);
+		geometry.translate(i, height < sandHeight ? -waterBlockHeight * 0.5 : 0, j);
+
 		console.log(height);
 		const material = new THREE.MeshBasicMaterial();
 
-		if (height > grass3.height) {
-			material.color = grass3.color;
-		} else if (height > grass2.height) {
-			material.color = grass2.color;
-		} else if (height > grass1.height) {
-			material.color = grass1.color;
-		} else if (height > sand3.height) {
-			material.color = sand3.color;
-		} else if (height > sand2.height) {
-			material.color = sand2.color;
-		} else if (height > sand1.height) {
-			material.color = sand1.color;
-		} else if (height > water3.height) {
-			material.color = water3.color;
-		} else if (height > water2.height) {
-			material.color = water2.color;
-		} else if (height > water1.height) {
-			material.color = water1.color;
+		if (height > grassHeight) {
+			const grassWeight = 1 - height < 0.4 ? 0.4 : 1 - height;
+			material.color = new THREE.Color(0.1, grassWeight, 0);
+		} else if (height > sandHeight) {
+			material.color = new THREE.Color(0.6, (1 - height) * 0.85, 0);
+		} else if (height > waterHeight) {
+			material.color = new THREE.Color(0, 0.3, 1 - height);
 		}
 
 		const cube = new THREE.Mesh(geometry, material);
